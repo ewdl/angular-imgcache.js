@@ -53,33 +53,49 @@ angular.module('ImgCache', [])
                 });
             }
 
-            var loadImg = function(type, el, src) {
+            var loadImgSrc = function(el, src) {
 
                 ImgCache.$promise.then(function() {
+                    if (src) {
+                        ImgCache.isCached(src, function(path, success) {
+                            if (success) {
+                                ImgCache.useCachedFileWithSource(el, path);
+                            } else {
+                                ImgCache.cacheFile(path, function() {
+                                    ImgCache.useCachedFileWithSource(el, path);
+                                });
+                            }
+                        });
+                    }
+                });
+            }
 
-                    ImgCache.isCached(src, function(path, success) {
+            var loadImgBg = function(el, src) {
 
-                        if (success) {
-                            setImg(type, el, src);
-                        } else {
-                            ImgCache.cacheFile(src, function() {
-                                setImg(type, el, src);
-                            });
-                        }
-
-                    });
+                ImgCache.$promise.then(function() {
+                    if (src) {
+                        ImgCache.isCached(src, function(path, success) {
+                            if (success) {
+                                ImgCache.useCachedBackground(el, path);
+                            } else {
+                                ImgCache.cacheBackground(el, function () {
+                                    ImgCache.useCachedBackground(el, path);
+                                });
+                            }
+                        });
+                    }
                 });
             }
 
             attrs.$observe('icSrc', function(src) {
 
-                loadImg('src', el, src);
+                loadImgSrc(el, src);
 
             });
 
             attrs.$observe('icBg', function(src) {
 
-                loadImg('bg', el, src);
+                loadImgBg(el, src);
 
             });
 
