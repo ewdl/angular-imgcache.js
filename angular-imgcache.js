@@ -3,7 +3,6 @@ angular.module('ImgCache', [])
 .provider('ImgCache', function() {
 
     ImgCache.$init = function() {
-
         ImgCache.init(function() {
             ImgCache.$deferred.resolve();
         }, function() {
@@ -61,9 +60,8 @@ angular.module('ImgCache', [])
                             if (success) {
                                 ImgCache.useCachedFileWithSource(el, path);
                             } else {
-                                ImgCache.cacheFile(path, function() {
-                                    ImgCache.useCachedFileWithSource(el, path);
-                                });
+                                el.attr('src', src);
+                                ImgCache.cacheFile(path, function() {});
                             }
                         });
                     }
@@ -78,9 +76,8 @@ angular.module('ImgCache', [])
                             if (success) {
                                 ImgCache.useCachedBackground(el, path);
                             } else {
-                                ImgCache.cacheBackground(el, function () {
-                                    ImgCache.useCachedBackground(el, path);
-                                });
+                                el.css({'background-image': 'url(' + src + ')' });
+                                ImgCache.cacheBackground(el, function () {});
                             }
                         });
                     }
